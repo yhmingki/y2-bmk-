@@ -1,0 +1,2583 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mario Bandingan Semacam - Year 2</title>
+
+<style>
+/* =========================================================
+   MARIO BANDingAN SEMACAM - SINGLE FILE GAME
+   HTML + CSS + JAVASCRIPT
+   ========================================================= */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --red: #e53935;
+    --dark-red: #b71c1c;
+    --blue: #1976d2;
+    --yellow: #ffd54f;
+    --green: #43a047;
+    --light-green: #8bc34a;
+    --brown: #795548;
+    --cream: #fff8e1;
+    --sky: #81d4fa;
+    --white: #ffffff;
+    --dark: #263238;
+    --pink: #ff80ab;
+}
+
+body {
+    font-family: "Trebuchet MS", "Arial Rounded MT Bold", Arial, sans-serif;
+    background:
+        linear-gradient(#80d8ff 0 48%, #81c784 48% 100%);
+    min-height: 100vh;
+    color: var(--dark);
+    overflow-x: hidden;
+}
+
+/* ---------------- TOP BAR ---------------- */
+
+.topbar {
+    width: 100%;
+    background: linear-gradient(90deg, #e53935, #ff5252, #e53935);
+    color: white;
+    padding: 10px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 0 #9e1c1c;
+    position: relative;
+    z-index: 20;
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: 900;
+    text-shadow: 2px 2px #8b0000;
+}
+
+.stats {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.stat {
+    background: rgba(0,0,0,.25);
+    border: 2px solid rgba(255,255,255,.7);
+    border-radius: 20px;
+    padding: 6px 12px;
+    font-weight: 900;
+}
+
+.coin-icon {
+    color: #ffd600;
+    text-shadow: 1px 1px #8d6e00;
+}
+
+/* ---------------- GAME WORLD ---------------- */
+
+.game {
+    width: min(1200px, 96vw);
+    margin: 18px auto 30px;
+    min-height: 780px;
+    position: relative;
+    border: 6px solid #4e342e;
+    border-radius: 25px;
+    overflow: hidden;
+    background:
+        linear-gradient(
+            to bottom,
+            #81d4fa 0%,
+            #b3e5fc 47%,
+            #81c784 47%,
+            #66bb6a 72%,
+            #43a047 72%,
+            #388e3c 100%
+        );
+    box-shadow: 0 12px 30px rgba(0,0,0,.25);
+}
+
+/* clouds */
+
+.cloud {
+    position: absolute;
+    background: white;
+    width: 110px;
+    height: 35px;
+    border-radius: 30px;
+    opacity: .85;
+    z-index: 1;
+}
+
+.cloud:before,
+.cloud:after {
+    content: "";
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+}
+
+.cloud:before {
+    width: 45px;
+    height: 45px;
+    left: 20px;
+    top: -22px;
+}
+
+.cloud:after {
+    width: 60px;
+    height: 60px;
+    right: 15px;
+    top: -30px;
+}
+
+.cloud.c1 {
+    left: 5%;
+    top: 12%;
+}
+
+.cloud.c2 {
+    right: 7%;
+    top: 18%;
+    transform: scale(.75);
+}
+
+/* ground decorations */
+
+.tree {
+    position: absolute;
+    bottom: 105px;
+    font-size: 65px;
+    z-index: 2;
+}
+
+.tree.t1 { left: 2%; }
+.tree.t2 { right: 3%; }
+
+.bushes {
+    position: absolute;
+    bottom: 92px;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    font-size: 38px;
+    z-index: 2;
+}
+
+/* ---------------- MAIN MENU ---------------- */
+
+.screen {
+    position: relative;
+    z-index: 5;
+    min-height: 770px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 28px 20px;
+}
+
+.title {
+    font-size: clamp(30px, 5vw, 60px);
+    color: #fff;
+    text-align: center;
+    text-shadow:
+        4px 4px #b71c1c,
+        -2px -2px #b71c1c;
+    margin-top: 10px;
+}
+
+.subtitle {
+    background: white;
+    border: 4px solid #4e342e;
+    border-radius: 30px;
+    padding: 10px 25px;
+    margin: 12px 0 25px;
+    font-size: clamp(16px, 2vw, 23px);
+    font-weight: 900;
+    box-shadow: 0 5px 0 #795548;
+}
+
+.menu-card {
+    width: min(720px, 95%);
+    background: rgba(255,255,255,.96);
+    border: 5px solid #4e342e;
+    border-radius: 28px;
+    padding: 25px;
+    text-align: center;
+    box-shadow: 0 10px 0 rgba(78,52,46,.5);
+}
+
+.menu-card h2 {
+    color: var(--red);
+    margin-bottom: 15px;
+}
+
+.menu-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 13px;
+}
+
+.btn {
+    border: 0;
+    border-radius: 16px;
+    padding: 14px 18px;
+    font-size: 17px;
+    font-weight: 900;
+    cursor: pointer;
+    color: white;
+    background: var(--blue);
+    box-shadow: 0 5px 0 #0d47a1;
+    transition: .12s;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+.btn:active {
+    transform: translateY(4px);
+    box-shadow: 0 1px 0 #0d47a1;
+}
+
+.btn.red {
+    background: var(--red);
+    box-shadow: 0 5px 0 #9e1c1c;
+}
+
+.btn.green {
+    background: var(--green);
+    box-shadow: 0 5px 0 #1b5e20;
+}
+
+.btn.yellow {
+    background: #f9a825;
+    box-shadow: 0 5px 0 #e65100;
+}
+
+.btn.purple {
+    background: #8e44ad;
+    box-shadow: 0 5px 0 #5e3375;
+}
+
+.btn.gray {
+    background: #607d8b;
+    box-shadow: 0 5px 0 #37474f;
+}
+
+/* ---------------- MARIO CSS CHARACTER ---------------- */
+
+.mario {
+    width: 105px;
+    height: 145px;
+    position: relative;
+    margin: 5px auto 20px;
+    transition: transform .2s;
+    z-index: 10;
+}
+
+.mario.jump {
+    animation: marioJump .7s ease;
+}
+
+@keyframes marioJump {
+    0% { transform: translateY(0) rotate(0); }
+    35% { transform: translateY(-65px) rotate(-4deg); }
+    65% { transform: translateY(-65px) rotate(4deg); }
+    100% { transform: translateY(0) rotate(0); }
+}
+
+.mario .hat {
+    position: absolute;
+    top: 2px;
+    left: 12px;
+    width: 80px;
+    height: 38px;
+    background: #e53935;
+    border-radius: 45px 45px 12px 12px;
+    border: 4px solid #8e1b1b;
+}
+
+.mario .hat:after {
+    content: "M";
+    position: absolute;
+    left: 28px;
+    top: 3px;
+    width: 28px;
+    height: 25px;
+    background: white;
+    color: #d32f2f;
+    border-radius: 50%;
+    text-align: center;
+    font-weight: 900;
+    font-size: 18px;
+    line-height: 25px;
+}
+
+.mario .head {
+    position: absolute;
+    top: 32px;
+    left: 20px;
+    width: 65px;
+    height: 65px;
+    background: #f5b27b;
+    border: 4px solid #8d4b2b;
+    border-radius: 45% 45% 48% 48%;
+}
+
+.mario .ear {
+    position: absolute;
+    width: 16px;
+    height: 25px;
+    background: #f5b27b;
+    border: 3px solid #8d4b2b;
+    top: 20px;
+    border-radius: 50%;
+}
+
+.mario .ear.left { left: 11px; }
+.mario .ear.right { right: 11px; }
+
+.mario .eye {
+    position: absolute;
+    width: 10px;
+    height: 15px;
+    background: #263238;
+    border-radius: 50%;
+    top: 20px;
+}
+
+.mario .eye.left { left: 17px; }
+.mario .eye.right { right: 17px; }
+
+.mario .nose {
+    position: absolute;
+    width: 24px;
+    height: 20px;
+    background: #e89b66;
+    border-radius: 50%;
+    left: 20px;
+    top: 30px;
+}
+
+.mario .mustache {
+    position: absolute;
+    left: 14px;
+    top: 43px;
+    width: 38px;
+    height: 13px;
+    background: #4e342e;
+    border-radius: 50%;
+}
+
+.mario .body {
+    position: absolute;
+    top: 92px;
+    left: 20px;
+    width: 65px;
+    height: 45px;
+    background: #1565c0;
+    border: 4px solid #0d47a1;
+    border-radius: 15px 15px 8px 8px;
+}
+
+.mario .shirt {
+    position: absolute;
+    top: 87px;
+    left: 12px;
+    width: 80px;
+    height: 25px;
+    background: #e53935;
+    border-radius: 20px;
+}
+
+.mario .arm {
+    position: absolute;
+    width: 20px;
+    height: 45px;
+    background: #f5b27b;
+    border: 3px solid #8d4b2b;
+    border-radius: 20px;
+    top: 92px;
+}
+
+.mario .arm.left {
+    left: 0;
+    transform: rotate(25deg);
+}
+
+.mario .arm.right {
+    right: 0;
+    transform: rotate(-25deg);
+}
+
+.mario .foot {
+    position: absolute;
+    width: 42px;
+    height: 19px;
+    background: #6d3b22;
+    border-radius: 20px;
+    bottom: 0;
+}
+
+.mario .foot.left { left: 10px; }
+.mario .foot.right { right: 10px; }
+
+/* ---------------- GAME UI ---------------- */
+
+.game-screen {
+    width: min(1000px, 100%);
+    display: none;
+}
+
+.game-header {
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    background: rgba(255,255,255,.95);
+    border: 4px solid #4e342e;
+    border-radius: 18px;
+    padding: 10px 15px;
+    margin-bottom: 12px;
+}
+
+.level-label {
+    font-weight: 900;
+    color: #d32f2f;
+}
+
+.timer-box {
+    font-size: 24px;
+    font-weight: 900;
+    min-width: 90px;
+    text-align: center;
+}
+
+.timer-danger {
+    color: #e53935;
+    animation: pulse .5s infinite alternate;
+}
+
+@keyframes pulse {
+    to { transform: scale(1.12); }
+}
+
+.progress {
+    height: 13px;
+    background: #cfd8dc;
+    border-radius: 20px;
+    overflow: hidden;
+    width: 150px;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 100%;
+    background: #43a047;
+    transition: width .2s linear;
+}
+
+.question-card {
+    background: rgba(255,255,255,.98);
+    border: 5px solid #4e342e;
+    border-radius: 25px;
+    padding: 20px;
+    box-shadow: 0 8px 0 rgba(78,52,46,.5);
+}
+
+.question-number {
+    font-weight: 900;
+    color: #795548;
+    margin-bottom: 5px;
+}
+
+.question {
+    text-align: center;
+    font-size: clamp(23px, 4vw, 38px);
+    font-weight: 900;
+    margin: 8px 0 15px;
+}
+
+.blank {
+    color: #e53935;
+    border-bottom: 4px dashed #e53935;
+    padding: 0 15px;
+}
+
+.image-area {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    min-height: 110px;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.picture-card {
+    background: #fffde7;
+    border: 4px solid #795548;
+    border-radius: 20px;
+    padding: 10px 20px;
+    font-size: 55px;
+    min-width: 120px;
+    text-align: center;
+}
+
+.picture-card small {
+    display: block;
+    font-size: 14px;
+    font-weight: 900;
+}
+
+.answers {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.answer {
+    background: #fff;
+    border: 4px solid #546e7a;
+    border-radius: 16px;
+    padding: 15px;
+    font-size: 20px;
+    font-weight: 900;
+    cursor: pointer;
+    transition: .15s;
+}
+
+.answer:hover {
+    background: #e3f2fd;
+    transform: scale(1.02);
+}
+
+.answer.correct {
+    background: #a5d6a7;
+    border-color: #2e7d32;
+}
+
+.answer.wrong {
+    background: #ef9a9a;
+    border-color: #c62828;
+}
+
+.feedback {
+    min-height: 45px;
+    margin-top: 12px;
+    text-align: center;
+    font-size: 21px;
+    font-weight: 900;
+}
+
+.feedback.good {
+    color: #2e7d32;
+}
+
+.feedback.bad {
+    color: #c62828;
+}
+
+/* ---------------- LEVEL 3 WORD BUILDING ---------------- */
+
+.word-builder {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin: 15px auto;
+}
+
+.word-piece {
+    padding: 13px 17px;
+    background: #fff3e0;
+    border: 3px solid #ef6c00;
+    border-radius: 13px;
+    font-size: 18px;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+.word-piece.selected {
+    background: #ffe082;
+    transform: translateY(-4px);
+}
+
+.selected-sentence {
+    min-height: 60px;
+    background: #e8f5e9;
+    border: 3px dashed #43a047;
+    border-radius: 15px;
+    padding: 15px;
+    text-align: center;
+    font-size: 21px;
+    font-weight: 900;
+}
+
+/* ---------------- COINS ---------------- */
+
+.coin {
+    position: fixed;
+    z-index: 1000;
+    width: 27px;
+    height: 27px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #fff59d, #ffd600 45%, #ff8f00);
+    border: 3px solid #f57f17;
+    box-shadow: 0 0 12px #ffd600;
+    pointer-events: none;
+}
+
+.coin:after {
+    content: "$";
+    color: #f57f17;
+    font-weight: 900;
+    position: absolute;
+    left: 8px;
+    top: 2px;
+}
+
+@keyframes coinFly {
+    0% {
+        transform: translate(0,0) rotateY(0deg) scale(1);
+        opacity: 1;
+    }
+    70% {
+        opacity: 1;
+    }
+    100% {
+        transform: translate(var(--dx), var(--dy)) rotateY(720deg) scale(.3);
+        opacity: 0;
+    }
+}
+
+/* ---------------- SHOP ---------------- */
+
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.65);
+    z-index: 2000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+}
+
+.modal.show {
+    display: flex;
+}
+
+.modal-card {
+    width: min(800px, 96vw);
+    max-height: 90vh;
+    overflow-y: auto;
+    background: #fff;
+    border: 6px solid #4e342e;
+    border-radius: 25px;
+    padding: 25px;
+    animation: pop .25s ease;
+}
+
+@keyframes pop {
+    from {
+        transform: scale(.7);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.shop-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin: 20px 0;
+}
+
+.shop-item {
+    background: #fff8e1;
+    border: 3px solid #ffb300;
+    border-radius: 18px;
+    padding: 15px 8px;
+    text-align: center;
+}
+
+.shop-icon {
+    font-size: 35px;
+}
+
+.shop-item h3 {
+    margin: 6px 0;
+}
+
+.shop-item p {
+    font-size: 13px;
+    min-height: 35px;
+}
+
+.shop-buy {
+    margin-top: 8px;
+    width: 100%;
+    padding: 8px;
+    border: 0;
+    border-radius: 10px;
+    background: #43a047;
+    color: white;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+.shop-buy:disabled {
+    background: #b0bec5;
+    cursor: not-allowed;
+}
+
+/* ---------------- LEADERBOARD ---------------- */
+
+.leaderboard {
+    margin-top: 20px;
+    background: #fff;
+    border: 4px solid #4e342e;
+    border-radius: 18px;
+    padding: 15px;
+}
+
+.score-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px;
+    border-bottom: 2px dashed #ddd;
+    font-weight: 900;
+}
+
+.score-row:last-child {
+    border-bottom: 0;
+}
+
+/* ---------------- NOTIFICATION ---------------- */
+
+.toast {
+    position: fixed;
+    left: 50%;
+    top: 75px;
+    transform: translateX(-50%) translateY(-20px);
+    background: #263238;
+    color: white;
+    padding: 12px 22px;
+    border-radius: 20px;
+    z-index: 3000;
+    opacity: 0;
+    pointer-events: none;
+    font-weight: 900;
+    transition: .25s;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* ---------------- MOBILE ---------------- */
+
+@media(max-width: 700px) {
+
+    .logo {
+        font-size: 16px;
+    }
+
+    .stat {
+        font-size: 12px;
+        padding: 5px 8px;
+    }
+
+    .game {
+        width: 100%;
+        margin: 0;
+        border-radius: 0;
+        border-left: 0;
+        border-right: 0;
+    }
+
+    .menu-buttons,
+    .answers {
+        grid-template-columns: 1fr;
+    }
+
+    .shop-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .question {
+        font-size: 25px;
+    }
+
+    .answer {
+        padding: 13px;
+    }
+
+    .game-header {
+        font-size: 13px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- =====================================================
+     TOP BAR
+===================================================== -->
+
+<div class="topbar">
+    <div class="logo">🍄 MARIO BANDingAN SEMACAM</div>
+
+    <div class="stats">
+        <div class="stat">🪙 <span id="coinCount">0</span></div>
+        <div class="stat">🏆 <span id="scoreCount">0</span></div>
+        <button class="btn yellow" onclick="openShop()">🏪 商店</button>
+    </div>
+</div>
+
+<!-- =====================================================
+     GAME WORLD
+===================================================== -->
+
+<div class="game">
+
+    <div class="cloud c1"></div>
+    <div class="cloud c2"></div>
+
+    <div class="tree t1">🌳</div>
+    <div class="tree t2">🌳</div>
+
+    <div class="bushes">
+        <span>🌿</span>
+        <span>🌿</span>
+        <span>🌿</span>
+        <span>🌿</span>
+        <span>🌿</span>
+    </div>
+
+    <!-- ================= MENU ================= -->
+
+    <div class="screen" id="menuScreen">
+
+        <h1 class="title">🍄 MARIO<br>BANDingan SEMACAM</h1>
+
+        <div class="subtitle">
+            🇲🇾 马来文二年级 · Bandingan Semacam
+        </div>
+
+        <div class="mario" id="menuMario">
+            <div class="hat"></div>
+            <div class="head">
+                <div class="ear left"></div>
+                <div class="ear right"></div>
+                <div class="eye left"></div>
+                <div class="eye right"></div>
+                <div class="nose"></div>
+                <div class="mustache"></div>
+            </div>
+            <div class="shirt"></div>
+            <div class="body"></div>
+            <div class="arm left"></div>
+            <div class="arm right"></div>
+            <div class="foot left"></div>
+            <div class="foot right"></div>
+        </div>
+
+        <div class="menu-card">
+
+            <h2>🎮 选择游戏模式</h2>
+
+            <p style="margin-bottom:18px;">
+                学习 <b>macam</b> 的正确用法，答题赚金币！
+            </p>
+
+            <div class="menu-buttons">
+
+                <button class="btn green"
+                        onclick="startGame(1)">
+                    ⭐ Level 1<br>
+                    看图片找答案
+                </button>
+
+                <button class="btn blue"
+                        onclick="startGame(2)">
+                    🌟 Level 2<br>
+                    看句子选答案
+                </button>
+
+                <button class="btn purple"
+                        onclick="startGame(3)">
+                    🔥 Level 3<br>
+                    自己拼句子
+                </button>
+
+                <button class="btn red"
+                        onclick="startGame(4)">
+                    🏆 挑战模式<br>
+                    三个 Level 全部挑战
+                </button>
+
+            </div>
+
+            <div style="margin-top:20px;">
+                <button class="btn yellow" onclick="openLeaderboard()">
+                    🏆 排行榜
+                </button>
+
+                <button class="btn gray" onclick="showHelp()">
+                    ❓ 游戏说明
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ================= GAME SCREEN ================= -->
+
+    <div class="screen game-screen" id="gameScreen">
+
+        <div class="game-header">
+
+            <div>
+                <span class="level-label" id="levelLabel">
+                    Level 1
+                </span>
+                <br>
+                <span id="questionProgress">
+                    题目 1 / 10
+                </span>
+            </div>
+
+            <div class="progress">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+
+            <div class="timer-box" id="timerBox">
+                ⏱️ <span id="timer">10</span>
+            </div>
+
+            <button class="btn yellow"
+                    onclick="openShop()">
+                🏪 商店
+            </button>
+
+            <button class="btn gray"
+                    onclick="backToMenu()">
+                🏠
+            </button>
+
+        </div>
+
+        <div class="question-card">
+
+            <div class="question-number" id="questionNumber">
+                Question 1
+            </div>
+
+            <!-- MARIO -->
+
+            <div class="mario" id="gameMario">
+
+                <div class="hat"></div>
+
+                <div class="head">
+                    <div class="ear left"></div>
+                    <div class="ear right"></div>
+                    <div class="eye left"></div>
+                    <div class="eye right"></div>
+                    <div class="nose"></div>
+                    <div class="mustache"></div>
+                </div>
+
+                <div class="shirt"></div>
+                <div class="body"></div>
+                <div class="arm left"></div>
+                <div class="arm right"></div>
+                <div class="foot left"></div>
+                <div class="foot right"></div>
+
+            </div>
+
+            <div class="image-area" id="imageArea"></div>
+
+            <div class="question" id="questionText"></div>
+
+            <div id="builderArea"></div>
+
+            <div class="answers" id="answers"></div>
+
+            <div class="feedback" id="feedback"></div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =====================================================
+     SHOP
+===================================================== -->
+
+<div class="modal" id="shopModal">
+
+    <div class="modal-card">
+
+        <h2 style="text-align:center;color:#e53935;">
+            🏪 Mario 道具商店
+        </h2>
+
+        <p style="text-align:center;margin-top:8px;">
+            当前金币：🪙 <b id="shopCoins">0</b>
+        </p>
+
+        <div class="shop-grid">
+
+            <div class="shop-item">
+                <div class="shop-icon">⏰</div>
+                <h3>+5 秒</h3>
+                <p>增加 5 秒答题时间</p>
+                <button class="shop-buy"
+                        onclick="buyItem('time')">
+                    🪙 20
+                </button>
+            </div>
+
+            <div class="shop-item">
+                <div class="shop-icon">💡</div>
+                <h3>提示答案</h3>
+                <p>消除一个错误选项</p>
+                <button class="shop-buy"
+                        onclick="buyItem('hint')">
+                    🪙 15
+                </button>
+            </div>
+
+            <div class="shop-item">
+                <div class="shop-icon">🪙</div>
+                <h3>双倍金币</h3>
+                <p>下一题答对获得双倍金币</p>
+                <button class="shop-buy"
+                        onclick="buyItem('double')">
+                    🪙 30
+                </button>
+            </div>
+
+            <div class="shop-item">
+                <div class="shop-icon">⏭️</div>
+                <h3>跳过</h3>
+                <p>跳过当前题目</p>
+                <button class="shop-buy"
+                        onclick="buyItem('skip')">
+                    🪙 25
+                </button>
+            </div>
+
+        </div>
+
+        <button class="btn red"
+                style="width:100%;"
+                onclick="closeShop()">
+            关闭商店
+        </button>
+
+    </div>
+</div>
+
+<!-- =====================================================
+     LEADERBOARD
+===================================================== -->
+
+<div class="modal" id="leaderboardModal">
+
+    <div class="modal-card">
+
+        <h2 style="text-align:center;color:#f9a825;">
+            🏆 金币排行榜
+        </h2>
+
+        <div class="leaderboard" id="leaderboardList"></div>
+
+        <button class="btn red"
+                style="width:100%;margin-top:15px;"
+                onclick="closeLeaderboard()">
+            返回
+        </button>
+
+    </div>
+</div>
+
+<!-- =====================================================
+     HELP
+===================================================== -->
+
+<div class="modal" id="helpModal">
+
+    <div class="modal-card">
+
+        <h2 style="color:#e53935;text-align:center;">
+            🎮 游戏说明
+        </h2>
+
+        <br>
+
+        <p>
+            ⭐ <b>Level 1：</b> 看图片，然后选择正确的
+            <b>bandingan semacam</b>。
+        </p>
+
+        <br>
+
+        <p>
+            🌟 <b>Level 2：</b> 没有图片，根据句子的意思选择正确答案。
+        </p>
+
+        <br>
+
+        <p>
+            🔥 <b>Level 3：</b> 把词语重新排列，组成正确的
+            <b>bandingan semacam</b>。
+        </p>
+
+        <br>
+
+        <p>
+            🪙 答对：Mario 跳跃 + 金币奖励！
+        </p>
+
+        <br>
+
+        <p>
+            ❤️ 答错：Mario 会伤心，并显示正确答案。
+        </p>
+
+        <br>
+
+        <p>
+            ⏰ 每题 10 秒，时间到了会自动进入下一题。
+        </p>
+
+        <br>
+
+        <p>
+            🏪 可以用金币购买特殊道具。
+        </p>
+
+        <button class="btn red"
+                style="width:100%;margin-top:20px;"
+                onclick="closeHelp()">
+            开始游戏！
+        </button>
+
+    </div>
+</div>
+
+<!-- =====================================================
+     NAME MODAL
+===================================================== -->
+
+<div class="modal" id="nameModal">
+
+    <div class="modal-card" style="max-width:500px;text-align:center;">
+
+        <h2>🏆 挑战完成！</h2>
+
+        <p style="margin:15px;">
+            请输入玩家名字，保存到排行榜：
+        </p>
+
+        <input id="playerName"
+               maxlength="15"
+               placeholder="例如：小明"
+               style="
+                    width:100%;
+                    padding:14px;
+                    border:3px solid #90a4ae;
+                    border-radius:12px;
+                    font-size:18px;
+                    text-align:center;
+               ">
+
+        <button class="btn green"
+                style="width:100%;margin-top:15px;"
+                onclick="saveScore()">
+            保存成绩 🪙
+        </button>
+
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- =====================================================
+     JAVASCRIPT
+===================================================== -->
+
+<script>
+
+/* =========================================================
+   SOUND SYSTEM
+========================================================= */
+
+let audioCtx = null;
+
+function initAudio() {
+
+    if (!audioCtx) {
+        audioCtx = new (window.AudioContext ||
+                        window.webkitAudioContext)();
+    }
+}
+
+function playSound(type) {
+
+    try {
+
+        initAudio();
+
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        let frequency = 440;
+        let duration = .12;
+
+        if (type === "click") {
+            frequency = 500;
+        }
+
+        if (type === "correct") {
+            frequency = 700;
+            duration = .18;
+        }
+
+        if (type === "wrong") {
+            frequency = 180;
+            duration = .25;
+        }
+
+        if (type === "coin") {
+            frequency = 1000;
+            duration = .1;
+        }
+
+        if (type === "buy") {
+            frequency = 850;
+            duration = .25;
+        }
+
+        osc.frequency.value = frequency;
+        osc.type = "square";
+
+        gain.gain.setValueAtTime(.06, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(
+            .001,
+            audioCtx.currentTime + duration
+        );
+
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+
+    } catch(e) {}
+}
+
+
+/* =========================================================
+   QUESTIONS
+   全部根据用户提供的资料
+========================================================= */
+
+const questions = [
+
+    {
+        phrase: "panas macam",
+        answer: "api",
+        emoji: "🔥",
+        meaning: "热得像火",
+        wrong: ["batu", "semut", "lidi"]
+    },
+
+    {
+        phrase: "garang macam",
+        answer: "harimau",
+        emoji: "🐯",
+        meaning: "凶猛得像老虎",
+        wrong: ["kancil", "semut", "kilat"]
+    },
+
+    {
+        phrase: "berat macam",
+        answer: "batu",
+        emoji: "🪨",
+        meaning: "重得像石头",
+        wrong: ["api", "lidi", "semut"]
+    },
+
+    {
+        phrase: "bising macam",
+        answer: "pasar",
+        emoji: "🏪",
+        meaning: "吵得像巴刹",
+        wrong: ["batu", "kilat", "kancil"]
+    },
+
+    {
+        phrase: "masam macam",
+        answer: "cuka",
+        emoji: "🍋",
+        meaning: "酸得像醋",
+        wrong: ["api", "semut", "galah"]
+    },
+
+    {
+        phrase: "tinggi macam",
+        answer: "galah",
+        emoji: "📏",
+        meaning: "高得像竹竿",
+        wrong: ["batu", "cuka", "harimau"]
+    },
+
+    {
+        phrase: "cerdik macam",
+        answer: "kancil",
+        emoji: "🦌",
+        meaning: "聪明得像鼠鹿",
+        wrong: ["harimau", "lidi", "pasar"]
+    },
+
+    {
+        phrase: "pantas macam",
+        answer: "kilat",
+        emoji: "⚡",
+        meaning: "快得像闪电",
+        wrong: ["batu", "semut", "cuka"]
+    },
+
+    {
+        phrase: "rajin macam",
+        answer: "semut",
+        emoji: "🐜",
+        meaning: "勤劳得像蚂蚁",
+        wrong: ["kancil", "kilat", "harimau"]
+    },
+
+    {
+        phrase: "kurus macam",
+        answer: "lidi",
+        emoji: "🥢",
+        meaning: "瘦得像竹签",
+        wrong: ["batu", "pasar", "api"]
+    }
+
+];
+
+
+/* =========================================================
+   GAME VARIABLES
+========================================================= */
+
+let currentLevel = 1;
+let challengeMode = false;
+
+let questionIndex = 0;
+let levelQuestions = [];
+
+let coins = 0;
+let score = 0;
+
+let timeLeft = 10;
+let timerInterval = null;
+
+let questionLocked = false;
+
+let doubleCoins = false;
+
+let playerName = "";
+
+let selectedWords = [];
+
+
+/* =========================================================
+   DOM
+========================================================= */
+
+const menuScreen =
+    document.getElementById("menuScreen");
+
+const gameScreen =
+    document.getElementById("gameScreen");
+
+const questionText =
+    document.getElementById("questionText");
+
+const answers =
+    document.getElementById("answers");
+
+const imageArea =
+    document.getElementById("imageArea");
+
+const feedback =
+    document.getElementById("feedback");
+
+const timer =
+    document.getElementById("timer");
+
+const timerBox =
+    document.getElementById("timerBox");
+
+const progressBar =
+    document.getElementById("progressBar");
+
+const levelLabel =
+    document.getElementById("levelLabel");
+
+const questionProgress =
+    document.getElementById("questionProgress");
+
+const questionNumber =
+    document.getElementById("questionNumber");
+
+const gameMario =
+    document.getElementById("gameMario");
+
+const coinCount =
+    document.getElementById("coinCount");
+
+const scoreCount =
+    document.getElementById("scoreCount");
+
+
+/* =========================================================
+   START GAME
+========================================================= */
+
+function startGame(level) {
+
+    initAudio();
+    playSound("click");
+
+    challengeMode = level === 4;
+
+    if (challengeMode) {
+        currentLevel = 1;
+    } else {
+        currentLevel = level;
+    }
+
+    questionIndex = 0;
+    coins = 0;
+    score = 0;
+
+    updateStats();
+
+    menuScreen.style.display = "none";
+    gameScreen.style.display = "flex";
+
+    createQuestionList();
+
+    showQuestion();
+}
+
+
+/* =========================================================
+   QUESTION LIST
+========================================================= */
+
+function createQuestionList() {
+
+    levelQuestions = [...questions];
+
+    /* Shuffle */
+
+    levelQuestions.sort(() => Math.random() - .5);
+
+    /* Challenge mode keeps all 10 */
+
+    if (!challengeMode) {
+
+        levelQuestions =
+            levelQuestions.slice(0, 8);
+
+    }
+}
+
+
+/* =========================================================
+   SHOW QUESTION
+========================================================= */
+
+function showQuestion() {
+
+    clearInterval(timerInterval);
+
+    questionLocked = false;
+
+    feedback.textContent = "";
+    feedback.className = "feedback";
+
+    answers.innerHTML = "";
+    imageArea.innerHTML = "";
+
+    selectedWords = [];
+
+    const q =
+        levelQuestions[questionIndex];
+
+    levelLabel.textContent =
+        challengeMode
+            ? "🏆 挑战模式 · Level " + currentLevel
+            : "⭐ Level " + currentLevel;
+
+    questionNumber.textContent =
+        "Question " + (questionIndex + 1);
+
+    questionProgress.textContent =
+        "题目 " +
+        (questionIndex + 1) +
+        " / " +
+        levelQuestions.length;
+
+    /* LEVEL 1 */
+
+    if (currentLevel === 1) {
+
+        questionText.innerHTML =
+            `${q.phrase} <span class="blank">________</span>`;
+
+        imageArea.innerHTML = `
+            <div class="picture-card">
+                ${q.emoji}
+                <small>${q.meaning}</small>
+            </div>
+        `;
+
+        createMultipleChoice(q);
+
+    }
+
+    /* LEVEL 2 */
+
+    else if (currentLevel === 2) {
+
+        questionText.innerHTML =
+            `选择正确的 Bandingan Semacam：<br>
+             <span style="color:#e53935">${q.phrase}</span>
+             <span class="blank">________</span>`;
+
+        imageArea.innerHTML = `
+            <div style="
+                background:#e3f2fd;
+                border:3px dashed #1976d2;
+                padding:15px 25px;
+                border-radius:18px;
+                font-weight:900;
+            ">
+                💡 提示：${q.meaning}
+            </div>
+        `;
+
+        createMultipleChoice(q);
+
+    }
+
+    /* LEVEL 3 */
+
+    else {
+
+        createWordBuilder(q);
+
+    }
+
+    startTimer();
+}
+
+
+/* =========================================================
+   MULTIPLE CHOICE
+========================================================= */
+
+function createMultipleChoice(q) {
+
+    let choices = [
+        q.answer,
+        ...q.wrong
+    ];
+
+    choices.sort(() => Math.random() - .5);
+
+    choices.forEach((choice, index) => {
+
+        const button =
+            document.createElement("button");
+
+        button.className = "answer";
+
+        button.innerHTML =
+            `${String.fromCharCode(65 + index)}. ${choice}`;
+
+        button.onclick = () => {
+
+            checkAnswer(
+                choice,
+                q.answer,
+                button
+            );
+
+        };
+
+        answers.appendChild(button);
+
+    });
+}
+
+
+/* =========================================================
+   LEVEL 3 WORD BUILDER
+========================================================= */
+
+function createWordBuilder(q) {
+
+    questionText.innerHTML =
+        `把词语排成正确的句子：`;
+
+    imageArea.innerHTML = `
+        <div class="picture-card">
+            ${q.emoji}
+            <small>${q.meaning}</small>
+        </div>
+    `;
+
+    const builder =
+        document.createElement("div");
+
+    builder.className = "word-builder";
+
+    let words = [
+        q.phrase.split(" ")[0],
+        "macam",
+        q.answer
+    ];
+
+    words.sort(() => Math.random() - .5);
+
+    words.forEach(word => {
+
+        const button =
+            document.createElement("button");
+
+        button.className = "word-piece";
+        button.textContent = word;
+
+        button.onclick = () => {
+
+            if (
+                button.classList.contains("selected")
+            ) {
+                return;
+            }
+
+            button.classList.add("selected");
+
+            selectedWords.push(word);
+
+            updateBuilder();
+
+        };
+
+        builder.appendChild(button);
+
+    });
+
+    document.getElementById("builderArea")
+        .innerHTML = "";
+
+    document.getElementById("builderArea")
+        .appendChild(builder);
+
+    const selected =
+        document.createElement("div");
+
+    selected.id = "selectedSentence";
+    selected.className = "selected-sentence";
+
+    selected.textContent =
+        "点击词语组成句子";
+
+    document.getElementById("builderArea")
+        .appendChild(selected);
+
+    const check =
+        document.createElement("button");
+
+    check.className = "btn green";
+    check.style.marginTop = "12px";
+    check.textContent = "✅ 检查答案";
+
+    check.onclick = () => {
+
+        const expected =
+            q.phrase + " " + q.answer;
+
+        const user =
+            selectedWords.join(" ");
+
+        checkAnswer(
+            user,
+            expected,
+            check
+        );
+
+    };
+
+    document.getElementById("builderArea")
+        .appendChild(check);
+}
+
+
+function updateBuilder() {
+
+    const box =
+        document.getElementById("selectedSentence");
+
+    if (!box) return;
+
+    box.textContent =
+        selectedWords.length
+            ? selectedWords.join(" ")
+            : "点击词语组成句子";
+}
+
+
+/* =========================================================
+   CHECK ANSWER
+========================================================= */
+
+function checkAnswer(
+    selected,
+    correct,
+    clickedButton
+) {
+
+    if (questionLocked) return;
+
+    questionLocked = true;
+
+    clearInterval(timerInterval);
+
+    const isCorrect =
+        selected.trim().toLowerCase() ===
+        correct.trim().toLowerCase();
+
+    if (isCorrect) {
+
+        correctAnswer();
+
+    } else {
+
+        wrongAnswer();
+
+        highlightCorrect(correct);
+
+    }
+}
+
+
+/* =========================================================
+   CORRECT
+========================================================= */
+
+function correctAnswer() {
+
+    playSound("correct");
+
+    gameMario.classList.remove("jump");
+
+    void gameMario.offsetWidth;
+
+    gameMario.classList.add("jump");
+
+    let reward =
+        doubleCoins ? 20 : 10;
+
+    coins += reward;
+    score += reward;
+
+    doubleCoins = false;
+
+    updateStats();
+
+    feedback.textContent =
+        `🎉 Betul! +${reward} syiling! Mario 好棒！`;
+
+    feedback.className =
+        "feedback good";
+
+    createCoinExplosion();
+
+    showToast(
+        `🪙 +${reward} 金币！`
+    );
+
+    setTimeout(nextQuestion, 1200);
+}
+
+
+/* =========================================================
+   WRONG
+========================================================= */
+
+function wrongAnswer() {
+
+    playSound("wrong");
+
+    feedback.textContent =
+        "❌ Salah! 再看看正确答案！";
+
+    feedback.className =
+        "feedback bad";
+
+    gameMario.style.transform =
+        "translateX(-7px)";
+
+    setTimeout(() => {
+        gameMario.style.transform = "";
+    }, 150);
+
+    if (currentLevel !== 3) {
+
+        const q =
+            levelQuestions[questionIndex];
+
+        feedback.innerHTML +=
+            `<br><small>
+                正确答案：<b>${q.answer}</b>
+            </small>`;
+
+    }
+
+    setTimeout(nextQuestion, 1600);
+}
+
+
+/* =========================================================
+   HIGHLIGHT CORRECT
+========================================================= */
+
+function highlightCorrect(correct) {
+
+    const all =
+        document.querySelectorAll(".answer");
+
+    all.forEach(btn => {
+
+        if (
+            btn.textContent
+                .toLowerCase()
+                .includes(correct.toLowerCase())
+        ) {
+            btn.classList.add("correct");
+        }
+
+    });
+}
+
+
+/* =========================================================
+   TIMER
+========================================================= */
+
+function startTimer() {
+
+    timeLeft = 10;
+
+    timer.textContent = timeLeft;
+
+    timerBox.classList.remove(
+        "timer-danger"
+    );
+
+    progressBar.style.width = "100%";
+
+    timerInterval =
+        setInterval(() => {
+
+            timeLeft--;
+
+            timer.textContent =
+                timeLeft;
+
+            progressBar.style.width =
+                (timeLeft / 10 * 100) + "%";
+
+            if (timeLeft <= 3) {
+
+                timerBox.classList.add(
+                    "timer-danger"
+                );
+
+            }
+
+            if (timeLeft <= 0) {
+
+                clearInterval(timerInterval);
+
+                timeoutQuestion();
+
+            }
+
+        }, 1000);
+}
+
+
+/* =========================================================
+   TIMEOUT
+========================================================= */
+
+function timeoutQuestion() {
+
+    if (questionLocked) return;
+
+    questionLocked = true;
+
+    playSound("wrong");
+
+    feedback.textContent =
+        "⏰ Masa tamat! 时间到！";
+
+    feedback.className =
+        "feedback bad";
+
+    const q =
+        levelQuestions[questionIndex];
+
+    feedback.innerHTML +=
+        `<br><small>
+            正确答案：<b>${q.answer}</b>
+        </small>`;
+
+    gameMario.animate(
+        [
+            {transform:"translateX(0)"},
+            {transform:"translateX(-7px)"},
+            {transform:"translateX(7px)"},
+            {transform:"translateX(0)"}
+        ],
+        {
+            duration:300
+        }
+    );
+
+    setTimeout(nextQuestion, 1600);
+}
+
+
+/* =========================================================
+   NEXT QUESTION
+========================================================= */
+
+function nextQuestion() {
+
+    questionIndex++;
+
+    if (
+        questionIndex >=
+        levelQuestions.length
+    ) {
+
+        finishLevel();
+
+        return;
+
+    }
+
+    /* Challenge mode changes level */
+
+    if (challengeMode) {
+
+        if (questionIndex === 3) {
+            currentLevel = 2;
+            showToast("🌟 Level 2 开始！");
+        }
+
+        if (questionIndex === 6) {
+            currentLevel = 3;
+            showToast("🔥 Level 3 开始！");
+        }
+
+    }
+
+    showQuestion();
+}
+
+
+/* =========================================================
+   FINISH
+========================================================= */
+
+function finishLevel() {
+
+    clearInterval(timerInterval);
+
+    gameScreen.style.display = "none";
+
+    document.getElementById("nameModal")
+        .classList.add("show");
+
+    document.getElementById("playerName")
+        .value = "";
+
+    showToast(
+        `🏆 完成！总分 ${score} 分！`
+    );
+}
+
+
+/* =========================================================
+   COIN EXPLOSION
+========================================================= */
+
+function createCoinExplosion() {
+
+    playSound("coin");
+
+    const rect =
+        gameMario.getBoundingClientRect();
+
+    const startX =
+        rect.left + rect.width / 2;
+
+    const startY =
+        rect.top + 10;
+
+    for (let i = 0; i < 16; i++) {
+
+        const coin =
+            document.createElement("div");
+
+        coin.className = "coin";
+
+        coin.style.left =
+            startX + "px";
+
+        coin.style.top =
+            startY + "px";
+
+        const dx =
+            (Math.random() - .5) * 350;
+
+        const dy =
+            -Math.random() * 250 - 40;
+
+        coin.style.setProperty(
+            "--dx",
+            dx + "px"
+        );
+
+        coin.style.setProperty(
+            "--dy",
+            dy + "px"
+        );
+
+        coin.style.animation =
+            `coinFly ${
+                .7 + Math.random() * .5
+            }s ease-out forwards`;
+
+        document.body.appendChild(coin);
+
+        setTimeout(() => {
+            coin.remove();
+        }, 1500);
+
+    }
+}
+
+
+/* =========================================================
+   SHOP
+========================================================= */
+
+function openShop() {
+
+    playSound("click");
+
+    updateShop();
+
+    document.getElementById("shopModal")
+        .classList.add("show");
+}
+
+
+function closeShop() {
+
+    document.getElementById("shopModal")
+        .classList.remove("show");
+
+}
+
+
+function updateShop() {
+
+    document.getElementById("shopCoins")
+        .textContent = coins;
+
+}
+
+
+function buyItem(item) {
+
+    let cost = 0;
+
+    if (item === "time") cost = 20;
+    if (item === "hint") cost = 15;
+    if (item === "double") cost = 30;
+    if (item === "skip") cost = 25;
+
+    if (coins < cost) {
+
+        playSound("wrong");
+
+        showToast(
+            "❌ 金币不够！"
+        );
+
+        return;
+
+    }
+
+    coins -= cost;
+
+    updateStats();
+
+    updateShop();
+
+    playSound("buy");
+
+    if (item === "time") {
+
+        if (!questionLocked) {
+
+            timeLeft =
+                Math.min(
+                    timeLeft + 5,
+                    20
+                );
+
+            timer.textContent =
+                timeLeft;
+
+            progressBar.style.width =
+                Math.min(
+                    timeLeft / 10 * 100,
+                    100
+                ) + "%";
+
+            showToast(
+                "⏰ +5 秒！"
+            );
+
+        } else {
+
+            coins += cost;
+
+            updateStats();
+
+            showToast(
+                "❌ 现在没有进行中的题目。"
+            );
+
+        }
+
+    }
+
+    if (item === "hint") {
+
+        useHint();
+
+    }
+
+    if (item === "double") {
+
+        doubleCoins = true;
+
+        showToast(
+            "🪙 下一题金币 ×2！"
+        );
+
+    }
+
+    if (item === "skip") {
+
+        if (!questionLocked) {
+
+            questionLocked = true;
+
+            clearInterval(timerInterval);
+
+            showToast(
+                "⏭️ 已跳过！"
+            );
+
+            closeShop();
+
+            setTimeout(nextQuestion, 500);
+
+        }
+
+    }
+
+}
+
+
+/* =========================================================
+   HINT
+========================================================= */
+
+function useHint() {
+
+    if (currentLevel === 3) {
+
+        showToast(
+            "💡 Level 3：先找出「macam」！"
+        );
+
+        return;
+
+    }
+
+    const q =
+        levelQuestions[questionIndex];
+
+    const buttons =
+        [...document.querySelectorAll(".answer")];
+
+    const wrongButtons =
+        buttons.filter(btn =>
+            !btn.textContent
+                .toLowerCase()
+                .includes(
+                    q.answer.toLowerCase()
+                )
+        );
+
+    if (wrongButtons.length) {
+
+        const remove =
+            wrongButtons[
+                Math.floor(
+                    Math.random() *
+                    wrongButtons.length
+                )
+            ];
+
+        remove.style.visibility =
+            "hidden";
+
+        showToast(
+            "💡 一个错误答案已经被消除了！"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   STATS
+========================================================= */
+
+function updateStats() {
+
+    coinCount.textContent =
+        coins;
+
+    scoreCount.textContent =
+        score;
+
+    updateShop();
+
+}
+
+
+/* =========================================================
+   MENU
+========================================================= */
+
+function backToMenu() {
+
+    clearInterval(timerInterval);
+
+    gameScreen.style.display = "none";
+
+    menuScreen.style.display = "flex";
+
+    questionLocked = true;
+
+}
+
+
+function showHelp() {
+
+    document.getElementById("helpModal")
+        .classList.add("show");
+
+}
+
+
+function closeHelp() {
+
+    document.getElementById("helpModal")
+        .classList.remove("show");
+
+}
+
+
+/* =========================================================
+   LEADERBOARD
+========================================================= */
+
+function getScores() {
+
+    try {
+
+        return JSON.parse(
+            localStorage.getItem(
+                "marioBandinganScores"
+            )
+        ) || [];
+
+    } catch(e) {
+
+        return [];
+
+    }
+
+}
+
+
+function saveScore() {
+
+    const nameInput =
+        document.getElementById("playerName");
+
+    playerName =
+        nameInput.value.trim() ||
+        "匿名玩家";
+
+    const scores =
+        getScores();
+
+    scores.push({
+        name: playerName,
+        score: score,
+        coins: coins,
+        date: new Date()
+            .toLocaleDateString()
+    });
+
+    scores.sort(
+        (a,b) => b.score - a.score
+    );
+
+    const top10 =
+        scores.slice(0, 10);
+
+    localStorage.setItem(
+        "marioBandinganScores",
+        JSON.stringify(top10)
+    );
+
+    document.getElementById("nameModal")
+        .classList.remove("show");
+
+    openLeaderboard();
+
+}
+
+
+function openLeaderboard() {
+
+    const list =
+        document.getElementById(
+            "leaderboardList"
+        );
+
+    const scores =
+        getScores();
+
+    if (!scores.length) {
+
+        list.innerHTML = `
+            <div style="
+                text-align:center;
+                padding:25px;
+            ">
+                🏆 还没有成绩！<br>
+                快来挑战 Mario 吧！
+            </div>
+        `;
+
+    } else {
+
+        list.innerHTML =
+            scores.map((s,i) => {
+
+                let medal =
+                    ["🥇","🥈","🥉"][i] ||
+                    "🏅";
+
+                return `
+                    <div class="score-row">
+                        <span>
+                            ${medal}
+                            ${i + 1}.
+                            ${escapeHTML(s.name)}
+                        </span>
+
+                        <span>
+                            🪙 ${s.score}
+                        </span>
+                    </div>
+                `;
+
+            }).join("");
+
+    }
+
+    document.getElementById(
+        "leaderboardModal"
+    ).classList.add("show");
+
+}
+
+
+function closeLeaderboard() {
+
+    document.getElementById(
+        "leaderboardModal"
+    ).classList.remove("show");
+
+}
+
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
+
+function escapeHTML(str) {
+
+    return String(str)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+
+}
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+let toastTimer = null;
+
+function showToast(message) {
+
+    const toast =
+        document.getElementById("toast");
+
+    toast.textContent = message;
+
+    toast.classList.add("show");
+
+    clearTimeout(toastTimer);
+
+    toastTimer =
+        setTimeout(() => {
+
+            toast.classList.remove("show");
+
+        }, 1800);
+
+}
+
+
+/* =========================================================
+   KEYBOARD SUPPORT
+========================================================= */
+
+document.addEventListener(
+    "keydown",
+    e => {
+
+        /* Press 1-4 to select answers */
+
+        if (
+            ["1","2","3","4"]
+            .includes(e.key)
+        ) {
+
+            const buttons =
+                document.querySelectorAll(
+                    ".answer"
+                );
+
+            const index =
+                Number(e.key) - 1;
+
+            if (buttons[index]) {
+
+                buttons[index].click();
+
+            }
+
+        }
+
+        /* ESC closes modal */
+
+        if (e.key === "Escape") {
+
+            document
+                .querySelectorAll(".modal.show")
+                .forEach(modal => {
+
+                    modal.classList.remove(
+                        "show"
+                    );
+
+                });
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   INITIALIZE
+========================================================= */
+
+updateStats();
+
+</script>
+
+</body>
+</html>
